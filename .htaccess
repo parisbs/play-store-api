@@ -1,0 +1,3 @@
+PassengerAppRoot "/home/blindoap/play-store-api"
+PassengerBaseURI "https://api.blindoapp.com/play-store"
+PassengerPython "/home/blindoap/virtualenv/play-store-api/3.6/bin/python"

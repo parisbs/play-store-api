@@ -1,8 +1,8 @@
-#!/home/blindoap/virtualenv/play-store-api/3.6/bin/python
+import imp
+import os
+import sys
 
-from flup.server.fcgi import WSGIServer
-from play_store_api import create_api
+sys.path.insert(0, os.path.dirname(__file__))
 
-if __name__ == '__main__':
-    api = create_api()
-    WSGIServer(api).run()
+wsgi = imp.load_source('wsgi', 'myapp.py')
+application = wsgi.application
