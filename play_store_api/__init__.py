@@ -27,6 +27,7 @@ def create_api(config=None):
         prefix='/v{}'.format(app.config['API_VERSION']),
         doc='/docs',
         catch_all_404s=True,
+        ordered=True,
         contact='Paris N. Baltazar Salguero',
         contact_url='https://github.com/parisbs/play-store-api',
         contact_email='sieg.sb@gmail.com',
