@@ -6,6 +6,9 @@ run:
 
 install: install-deps install-githooks
 
+install-server:
+	pip install -r requirements.txt
+
 install-deps:
 	pip install --upgrade pip
 	pip install -r requirements.txt
@@ -35,4 +38,4 @@ coverage:
 clean:
 	rm -rf .tox
 
-.PHONY: run install install-deps install-githooks test-all test unit-tests functional-tests lint coverage clean
+.PHONY: run install install-server install-deps install-githooks test-all test unit-tests functional-tests lint coverage clean
