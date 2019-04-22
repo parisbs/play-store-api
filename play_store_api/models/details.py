@@ -228,7 +228,7 @@ class AppDetails(object):
             for key in data:
                 setattr(self, key, data[key])
 
-    def get_by_id(self, lang, country, app_id):
+    def get_by_id(self, app_id, lang, country):
         status = 200
         try:
             response = play_scraper.details(app_id, lang, country)
