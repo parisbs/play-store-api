@@ -105,3 +105,6 @@ venv.bak/
 
 # macos ds store file
 .DS_STORE
+
+# sensible files
+git-hooks/post-receive
