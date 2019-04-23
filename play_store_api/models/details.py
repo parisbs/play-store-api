@@ -233,11 +233,11 @@ class AppDetails(object):
         try:
             response = play_scraper.details(app_id, lang, country)
         except ValueError:
-            response = dict({"message": "app not found"})
+            response = None
             status = 404
         if 200 == status:
             return AppDetails(response)
-        return response, status
+        return response
 
 
 class Histogram(object):
