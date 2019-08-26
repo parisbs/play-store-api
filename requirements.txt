@@ -19,7 +19,7 @@ jsonschema==3.0.1
 lxml==4.3.3
 MarkupSafe==1.1.1
 more-itertools==7.0.0
-play-scraper==0.5.4
+play-scraper==0.5.5
 pluggy==0.9.0
 py==1.8.0
 pycparser==2.19
