@@ -1,6 +1,6 @@
 from flask_restplus import fields
 
-import play_scraper
+from google_play_scraper import app
 
 
 histogram_model = {
@@ -38,27 +38,41 @@ histogram_model = {
 
 
 details_model = {
-    'app_id': fields.String(
+    'appId': fields.String(
         title='App ID',
         description='App package name',
         example='com.android.chrome',
         readOnly=True,
     ),
-    'category': fields.List(
-        fields.String(
-            title='Category',
-            description='App category on Play Store',
-            example='COMMUNICATION',
-            readOnly=True,
-        ),
+    'adSupported': fields.Boolean(
+        title='Ad supported',
+        description='The app ads support',
+        example=False,
+        readOnly=True,
     ),
-    'content_rating': fields.List(
-        fields.String(
-            title='Content rating',
-            description='App content rating assigned on Play Store',
-            example='Everyone',
-            readOnly=True,
-        ),
+    'containsAds': fields.Boolean(
+        title='Contains ads',
+        description='If the app contains ads or not',
+        example=False,
+        readOnly=True,
+    ),
+    'contentRating': fields.String(
+        title='Content rating',
+        description='App content rating assigned on Play Store',
+        example='Everyone',
+        readOnly=True,
+    ),
+    'contentRatingDescription': fields.String(
+        title='Content rating description',
+        description='The app content rating description',
+        example='Mild Fantasy Violence',
+        readOnly=True,
+    ),
+    'currency': fields.String(
+        title='Currency',
+        description='The price currency',
+        example='USD',
+        readOnly=True,
     ),
     'description': fields.String(
         title='Description',
@@ -66,7 +80,7 @@ details_model = {
         example='Google Chrome is a fast and secure web browser',
         readOnly=True,
     ),
-    'description_html': fields.String(
+    'descriptionHTML': fields.String(
         title='Description HTML',
         description='App description using HTML markup',
         example='<p>Google Chrome is a fast and secure web browser</p>',
@@ -78,48 +92,66 @@ details_model = {
         example='Google LLC',
         readOnly=True,
     ),
-    'developer_address': fields.String(
+    'developerAddress': fields.String(
         title='Developer address',
         description='Developer postal address',
         example='1600 Amphitheatre Parkway, Mountain View 94043',
         default='',
         readOnly=True,
     ),
-    'developer_email': fields.String(
+    'developerEmail': fields.String(
         title='Developer email',
         description='Developer support email',
         example='apps-help@google.com',
         default='',
         readOnly=True,
     ),
-    'developer_id': fields.String(
+    'developerId': fields.String(
         title='Developer ID',
         description='Developer ID on Play Store',
         example='5700313618786177705',
         readOnly=True,
     ),
-    'developer_url': fields.String(
-        title='Developer URL',
-        description='Developer Play Store URL',
+    'developerWebsite': fields.String(
+        title='Developer website',
+        description='Developer Play Store website',
         example='https://www.google.com/chrome/android',
         readOnly=True,
     ),
-    'editors_choice': fields.Boolean(
-        title='Editors choice',
-        description='If the app is editors choice on Play Store',
-        example=False,
+    'free': fields.Boolean(
+        title='Free',
+        description='If the app is free or not',
+        example=True,
+        readOnly=True,
+    ),
+    'genre': fields.String(
+        title='Genre',
+        description='The app genre to display',
+        example='Communication',
+        readOnly=True,
+    ),
+    'genreId': fields.String(
+        title='Genre ID',
+        description='The app genre ID',
+        example='COMMUNICATION',
+        readOnly=True,
+    ),
+    'headerImage': fields.String(
+        title='Header image',
+        description='The app header image',
+        example='https://play-lh.googleusercontent.com/WPIJiEaY1kOU3...',
         readOnly=True,
     ),
     'histogram': None,
-    'iap': fields.Boolean(
-        title='IAP',
+    'offersIAP': fields.Boolean(
+        title='Offers IAP',
         description='If the app have in app purchases',
         example=False,
         default=False,
         readOnly=True,
     ),
-    'iap_range': fields.String(
-        title='IAP range',
+    'inAppProductPrice': fields.String(
+        title='In App Product price range',
         description='Range of prices for in app purchases',
         example='$0.99-$9.99',
         default='',
@@ -128,7 +160,7 @@ details_model = {
     'icon': fields.String(
         title='Icon',
         description='App icon URL',
-        example='https://lh3.googleusercontent.com/nYhPnY2I',
+        example='https://lh3.googleusercontent.com/nYhPnY2I...',
         readOnly=True,
     ),
     'installs': fields.String(
@@ -137,31 +169,29 @@ details_model = {
         example='1,000,000,000+',
         readOnly=True,
     ),
-    'interactive_elements': fields.List(
-        fields.String(
-            title='Interactive elements',
-            description='If the developer report interactive elements',
-            example='Unrestricted Internet',
-            readOnly=True,
-        ),
-    ),
     'price': fields.String(
         title='Price',
         description='App price on Play Store, if is 0 the app is free',
         example='0',
         readOnly=True,
     ),
-    'recent_changes': fields.String(
+    'privacyPolicy': fields.String(
+        title='Privacy policy',
+        description='The app privacy policy URL',
+        example='http://www.google.com/chrome/intl/en/privacy.html',
+        readOnly=True,
+    ),
+    'recentChanges': fields.String(
         title='Recent changes',
         description='recent changes for the app last version',
         example='We\'ve also included stability and performance improvements.',
         default='',
         readOnly=True,
     ),
-    'required_android_version': fields.String(
-        title='Required Android version',
-        description='Specifications for supported Android versions',
-        example='Varies with device',
+    'released': fields.String(
+        title='Released',
+        description='The released date of the app',
+        example='Feb 7, 2012',
         readOnly=True,
     ),
     'reviews': fields.Integer(
@@ -182,14 +212,14 @@ details_model = {
         fields.String(
             title='Screenshots',
             description='App screenshots URLs',
-            example='https://lh3.googleusercontent.com/lKPDNfs',
+            example='https://lh3.googleusercontent.com/lKPDNfs...',
             readOnly=True,
         ),
     ),
-    'size': fields.String(
-        title='Size',
-        description='App download size',
-        example='Varies with device',
+    'summary': fields.String(
+        title='Summary',
+        description='App summary',
+        example='Fast, simple, and secure. Google Chrome browser for Android phones and tablets.',
         readOnly=True,
     ),
     'title': fields.String(
@@ -211,11 +241,23 @@ details_model = {
         example='https://play.google.com/store/apps/details?id=com.android.chrome',
         readOnly=True,
     ),
+    'version': fields.String(
+        title='Version',
+        description='The last app version',
+        example='Varies with device',
+        readOnly=True,
+    ),
     'video': fields.String(
         title='Video',
         description='App video URL',
-        example='https://youtube.com/watch?v=1839Hdu817D',
+        example='https://www.youtube.com/embed/DFXbVBFPOOs?ps=play&vq=large&rel=0&autohide=1&showinfo=0',
         default='',
+        readOnly=True,
+    ),
+    'videoImage': fields.String(
+        title='Video image',
+        description='The app video thumbnail',
+        example='https://play-lh.googleusercontent.com/KgDQ...',
         readOnly=True,
     ),
 }
@@ -231,16 +273,17 @@ class AppDetails(object):
     def get_by_id(self, app_id, lang, country):
         status = 200
         try:
-            response = play_scraper.details(app_id, lang, country)
+            response = app(app_id, lang, country)
         except ValueError:
             response = None
             status = 404
         if 200 == status:
+            print(response)
             return AppDetails(response)
         return response
 
 
 class Histogram(object):
     def __init__(self, histogram):
-        for key in histogram:
-            setattr(self, str(key), histogram[key])
+        for idx, value in enumerate(histogram):
+            setattr(self, str(idx + 1), histogram[idx])

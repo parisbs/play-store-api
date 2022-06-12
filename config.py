@@ -9,7 +9,7 @@ load_dotenv(dotenv_path)
 
 
 PROJECT = 'play-store-api'
-VERSION = '1'
+VERSION = '2'
 
 
 def get_config_environment():
