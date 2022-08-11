@@ -9,3 +9,6 @@ API to retrieve apps info from Play Store
 2. Run `make install-deps`
 3. Run `make run`
 4. Go to http://localhost:5000/v2/details/com.android.chrome
+
+## Open Source Libraries
+[Google Play Scraper](https://pypi.org/project/google-play-scraper/)
