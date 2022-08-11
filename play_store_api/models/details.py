@@ -278,7 +278,6 @@ class AppDetails(object):
             response = None
             status = 404
         if 200 == status:
-            print(response)
             return AppDetails(response)
         return response
 
